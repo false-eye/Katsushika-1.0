@@ -27,7 +27,7 @@ export default class extends BaseCommand {
         const { videoDetails } = await getInfo()
         if (Number(videoDetails.lengthSeconds) > 1800) return void M.reply('The video is too long to send')
         const video = await download(quality)
-        const text = `📗 *Title:* ${videoDetails.title}\n📕 *Channel:* ${videoDetails.author.name}\n📙 *Duration:* ${videoDetails.lengthSeconds}s`
+        const text = `📗 *Title: ${videoDetails.title}*\n📕 *Channel: ${videoDetails.author.name}*\n📙 *Duration: ${videoDetails.lengthSeconds}s*`
         return void (await M.reply(video, 'video', undefined, undefined, text).catch(async () => {
             await M.reply("Sending the video as Document as the video's too big")
             setTimeout(async () => {

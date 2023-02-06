@@ -1,21 +1,22 @@
 import { YT } from '../../lib'
-import { BaseCommand, Command, Message } from '../../Structures'
+import { Message, Command, BaseCommand } from '../../Structures'
 
 @Command('yta', {
-    description: 'Downloads the video of the given YouTube video URL and sends it as an audio',
-    exp: 30,
+    description: 'Downloads and sends the video as an audio of the provided YouTube video link',
+    cooldown: 10,
     category: 'media',
-    usage: 'yta [URL]',
-    cooldown: 30,
+    exp: 25,
+    usage: 'yta [link]',
     aliases: ['ytaudio']
 })
-export default class command extends BaseCommand {
-    override execute = async (M: Message): Promise<void> => {
-        const url = M.urls.filter((url) => url.includes('youtu.be') || url.includes('youtube.com'))
-        if (!url.length || url.length < 1) return void M.reply('Provide a YouTube video URL to download, Baka!')
-        const { validate, download } = new YT(url[0], 'audio')
-        if (!validate()) return void M.reply('*Provide a valid YouTube video URL*')
-        const audio = await this.client.utils.mp3ToOpus(await download())
+export default class extends BaseCommand {
+    public override execute = async (M: Message): Promise<void> => {
+        const urls = M.urls.filter((url) => url.includes('youtube.com') || url.includes('youtu.be'))
+        if (!urls.length) return void M.reply('Provide a YouTube video URL to download, Baka!')
+        const url = urls[0]
+        const { validate, download } = new YT(url, 'audio')
+        if (!validate()) return void M.reply('Provide a valid YouTube video URL, Baka!')
+        const audio = await download()
         return void (await M.reply(audio, 'audio'))
     }
 }
