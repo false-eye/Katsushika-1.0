@@ -417,11 +417,6 @@
     "@types/node" "*"
     "@types/webidl-conversions" "*"
 
-"@types/yt-search@^2.3.2":
-  version "2.3.2"
-  resolved "https://registry.yarnpkg.com/@types/yt-search/-/yt-search-2.3.2.tgz#e714e3ccb12300ee605ffa13523f64794b543aaf"
-  integrity sha512-3QZDV7BUFkwEhodTZZWbCm+CeVwnT7tKXj8IT7IXjJpT3mwd54Udti2MJz3HltEFCa9lrqy+r/m1NPIQXegKug==
-
 "@typescript-eslint/eslint-plugin@^5.28.0":
   version "5.43.0"
   resolved "https://registry.yarnpkg.com/@typescript-eslint/eslint-plugin/-/eslint-plugin-5.43.0.tgz#4a5248eb31b454715ddfbf8cfbf497529a0a78bc"
@@ -4489,7 +4484,16 @@ yocto-queue@^0.1.0:
   resolved "https://registry.yarnpkg.com/yocto-queue/-/yocto-queue-0.1.0.tgz#0294eb3dee05028d31ee1a5fa2c556a6aaf10a1b"
   integrity sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q==
 
-yt-search@^2.10.3, yt-search@^2.8.0:
+youtubedl-core@^4.11.1:
+  version "4.11.1"
+  resolved "https://registry.yarnpkg.com/youtubedl-core/-/youtubedl-core-4.11.1.tgz#65f5f671c90df35973cc3350f8cf683d9b633362"
+  integrity sha512-WQYQo+LKFPu2Uet7rpmZSQtSIvcgyRtEAJO7hJa/qky8F45fC0jGyEscUQbxnFd/DkrKPPVzgtYC9QT3UwPYdA==
+  dependencies:
+    m3u8stream "^0.8.6"
+    miniget "^4.2.2"
+    sax "^1.1.3"
+
+yt-search@^2.8.0:
   version "2.10.3"
   resolved "https://registry.yarnpkg.com/yt-search/-/yt-search-2.10.3.tgz#c90db45e4a960f06ef1bfe7ba13457790ded661e"
   integrity sha512-msITxMhn+1f3RIlS2R0d5/275grX0nUgaD570Fap3gvPmwfvR9w31JG8B9++4Xtm6BLAzhdITK7kAWRInef8QQ==
