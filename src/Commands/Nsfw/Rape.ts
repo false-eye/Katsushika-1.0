@@ -13,7 +13,7 @@ export default class extends BaseCommand {
         if (M.quoted && !users.includes(M.quoted.sender.jid)) users.push(M.quoted.sender.jid)
         while (users.length < 2) users.push(M.sender.jid)
         if (users.includes(M.sender.jid)) users = users.reverse()
-        const image = this.client.utils.getRandomFile('./assets/dreddgifs')
+        const image = this.client.utils.getRandomFile('./assets/hentai')
         const buffer = (await this.client.assets.get(image)) as Buffer
         const percentage = Math.floor(Math.random() * 101)
         let text = ''
