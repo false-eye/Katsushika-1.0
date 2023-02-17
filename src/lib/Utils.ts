@@ -3,9 +3,8 @@ import { tmpdir } from 'os'
 import { promisify } from 'util'
 import { exec } from 'child_process'
 import { readFile, unlink, readdirSync, writeFile } from 'fs-extra'
-const { uploadByBuffer } = require('telegraph-uploader')
 import regex from 'emoji-regex'
-import * as linkify from 'linkifyjs'
+import getUrls from 'get-urls'
 
 export class Utils {
     public generateRandomHex = (): string => `#${(~~(Math.random() * (1 << 24))).toString(16)}`
@@ -26,20 +25,11 @@ export class Utils {
         return []
     }
 
-    public extractUrls = (content: string): string[] => {
-        const urls = linkify.find(content)
-        const arr = []
-        for (const url of urls) {
-            arr.push(url.value)
-        }
-        return arr
-    }
+    public extractUrls = (content: string): string[] => Array.from(getUrls(content))
 
     public extractEmojis = (content: string): string[] => content.match(regex()) || []
 
     public formatSeconds = (seconds: number): string => new Date(seconds * 1000).toISOString().substr(11, 8)
-
-    public bufferToUrl = async (media: Buffer): Promise<Buffer> => (await uploadByBuffer(media)).link
 
     public convertMs = (ms: number, to: 'seconds' | 'minutes' | 'hours' = 'seconds'): number => {
         const seconds = parseInt((ms / 1000).toString().split('.')[0])
@@ -50,17 +40,6 @@ export class Utils {
         return seconds
     }
 
-    public getRandomFile = (dir: string): string => {
-        let document: string = ''
-        try {
-            const result = readdirSync(dir)
-            document = result[Math.floor(Math.random() * result.length)].split(/\.(?=[^\.]+$)/)[0]
-        } catch {
-            document = '404'
-        }
-        return document
-    }
-    
     public webpToPng = async (webp: Buffer): Promise<Buffer> => {
         const filename = `${tmpdir()}/${Math.random().toString(36)}`
         await writeFile(`${filename}.webp`, webp)
@@ -79,6 +58,17 @@ export class Utils {
         return buffer
     }
 
+    public getRandomFile = (dir: string): string => {
+        let document: string = ''
+        try {
+            const result = readdirSync(dir)
+            document = result[Math.floor(Math.random() * result.length)].split(/\.(?=[^\.]+$)/)[0]
+        } catch {
+            document = '404'
+        }
+        return document
+    }
+    
     public gifToMp4 = async (gif: Buffer): Promise<Buffer> => {
         const filename = `${tmpdir()}/${Math.random().toString(36)}`
         await writeFile(`${filename}.gif`, gif)
