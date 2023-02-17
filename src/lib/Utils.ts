@@ -2,7 +2,7 @@ import axios from 'axios'
 import { tmpdir } from 'os'
 import { promisify } from 'util'
 import { exec } from 'child_process'
-import { readFile, unlink, writeFile } from 'fs-extra'
+import { readFile, unlink, readdirSync, writeFile } from 'fs-extra'
 const { uploadByBuffer } = require('telegraph-uploader')
 import regex from 'emoji-regex'
 import * as linkify from 'linkifyjs'
@@ -50,6 +50,17 @@ export class Utils {
         return seconds
     }
 
+    public getRandomFile = (dir: string): string => {
+        let document: string = ''
+        try {
+            const result = readdirSync(dir)
+            document = result[Math.floor(Math.random() * result.length)].split(/\.(?=[^\.]+$)/)[0]
+        } catch {
+            document = '404'
+        }
+        return document
+    }
+    
     public webpToPng = async (webp: Buffer): Promise<Buffer> => {
         const filename = `${tmpdir()}/${Math.random().toString(36)}`
         await writeFile(`${filename}.webp`, webp)
