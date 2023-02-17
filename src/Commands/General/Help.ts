@@ -12,7 +12,7 @@ import { IArgs } from '../../Types'
 export default class extends BaseCommand {
     public override execute = async (M: Message, { context }: IArgs): Promise<void> => {
         if (!context) {
-            const buffer = this.client.assets.get('Img') as Buffer
+            const buffer = this.client.assets.get('mia') as Buffer
             let commands = Array.from(this.handler.commands, ([command, data]) => ({
                 command,
                 data
