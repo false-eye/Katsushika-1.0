@@ -2,13 +2,11 @@ import axios from 'axios'
 import { tmpdir } from 'os'
 import { promisify } from 'util'
 import { exec } from 'child_process'
-import { readFile, readdirSync, unlink, writeFile } from 'fs-extra'
-import FormData from 'form-data'
+import { readFile, unlink, writeFile } from 'fs-extra'
 import regex from 'emoji-regex'
-import * as linkify from 'linkifyjs'
+import getUrls from 'get-urls'
 import { Canvacord } from 'canvacord'
 import { MoveClient } from 'pokenode-ts'
-const { uploadByBuffer } = require('telegraph-uploader')
 import Canvas from 'canvas'
 import { join } from 'path'
 import { load } from 'cheerio'
@@ -85,59 +83,6 @@ export class Utils {
             x: 'red',
             o: 'white'
         })
-    }
-
-    public getHangman = (state: number = 0): Buffer => {
-        const createLine = (
-            ctx: Canvas.CanvasRenderingContext2D,
-            fromX: number,
-            fromY: number,
-            toX: number,
-            toY: number,
-            color: string = '#000000'
-        ) => {
-            ctx.beginPath()
-            ctx.strokeStyle = color
-            ctx.moveTo(fromX, fromY)
-            ctx.lineTo(toX, toY)
-            ctx.stroke()
-            ctx.closePath()
-        }
-        const canvas = Canvas.createCanvas(300, 350)
-        const ctx = canvas.getContext('2d')
-        ctx.lineWidth = 5
-        createLine(ctx, 50, 330, 150, 330)
-        createLine(ctx, 100, 330, 100, 50)
-        createLine(ctx, 100, 50, 200, 50)
-        createLine(ctx, 200, 50, 200, 80)
-        if (state >= 1) {
-            ctx.strokeStyle = '#000000'
-            ctx.beginPath()
-            ctx.arc(200, 100, 20, 0, 2 * Math.PI)
-            ctx.stroke()
-            ctx.closePath()
-        }
-        if (state >= 2) createLine(ctx, 200, 120, 200, 200, '#000000')
-        if (state >= 3) createLine(ctx, 200, 150, 170, 130, state < 3 ? '#a3a3a3' : '#000000')
-        if (state >= 4) createLine(ctx, 200, 150, 230, 130, state < 4 ? '#a3a3a3' : '#000000')
-        if (state >= 5) createLine(ctx, 200, 200, 180, 230, state < 5 ? '#a3a3a3' : '#000000')
-        if (state >= 6) createLine(ctx, 200, 200, 220, 230, state < 6 ? '#a3a3a3' : '#000000')
-        return canvas.toBuffer()
-    }
-
-    public getRepeatedWords = (str: string): { [K: string]: number } => {
-        let tmp: { [K: string]: number } = {}
-        let c!: string
-        for (let i = str.length - 1; i >= 0; i--) {
-            c = str.charAt(i)
-            if (c in tmp) tmp[c] += 1
-            else tmp[c] = 1
-        }
-        let result: { [K: string]: number } = {}
-        for (c in tmp) {
-            if (tmp.hasOwnProperty(c) && tmp[c] > 1) result[c] = tmp[c]
-        }
-        return result
     }
 
     public validateCard = (data: string): boolean => {
@@ -433,9 +378,6 @@ export class Utils {
         }
     }
 
-    public superFetch = async (url: string): Promise<string> =>
-        await this.fetch<string>(`https://web-production-418e.up.railway.app/raw?url=${url}`)
-
     public getPokemonLearnableMove = async (
         pokemon: string | number,
         level: number,
@@ -559,25 +501,7 @@ export class Utils {
         }
     }
 
-    public getRandomFile = (dir: string): string => {
-        let document: string = ''
-        try {
-            const result = readdirSync(dir)
-            document = result[Math.floor(Math.random() * result.length)].split(/\.(?=[^\.]+$)/)[0]
-        } catch {
-            document = '404'
-        }
-        return document
-    }
-
-    public extractUrls = (content: string): string[] => {
-        const urls = linkify.find(content)
-        const arr = []
-        for (const url of urls) {
-            arr.push(url.value)
-        }
-        return arr
-    }
+    public extractUrls = (content: string): string[] => Array.from(getUrls(content))
 
     public extractEmojis = (content: string): string[] => content.match(regex()) || []
 
@@ -610,41 +534,6 @@ export class Utils {
         return buffer
     }
 
-    public webpToMp4 = async (webp: Buffer): Promise<Buffer> => {
-        const responseFile = async (form: FormData, buffer = '') => {
-            return axios.post(
-                buffer ? `https://ezgif.com/webp-to-mp4/${buffer}` : 'https://ezgif.com/webp-to-mp4',
-                form,
-                {
-                    headers: { 'Content-Type': `multipart/form-data; boundary=${form.getBoundary()}` }
-                }
-            )
-        }
-        return new Promise(async (resolve, reject) => {
-            const form: any = new FormData()
-            form.append('new-image-url', '')
-            form.append('new-image', webp, { filename: 'blob' })
-            responseFile(form)
-                .then(({ data }) => {
-                    const datafrom: any = new FormData()
-                    const $ = load(data)
-                    const file = $('input[name="file"]').attr('value')
-                    datafrom.append('file', file)
-                    datafrom.append('convert', 'Convert WebP to MP4!')
-                    responseFile(datafrom, file)
-                        .then(async ({ data }) => {
-                            const $ = load(data)
-                            const result = await this.getBuffer(
-                                `https:${$('div#output > p.outfile > video > source').attr('src')}`
-                            )
-                            resolve(result)
-                        })
-                        .catch(reject)
-                })
-                .catch(reject)
-        })
-    }
-
     public gifToMp4 = async (gif: Buffer): Promise<Buffer> => {
         const filename = `${tmpdir()}/${Math.random().toString(36)}`
         await writeFile(`${filename}.gif`, gif)
@@ -655,8 +544,6 @@ export class Utils {
         Promise.all([unlink(`${filename}.gif`), unlink(`${filename}.mp4`)])
         return buffer
     }
-
-    public bufferToUrl = async (media: Buffer): Promise<Buffer> => (await uploadByBuffer(media)).link
 
     public fetch = async <T>(url: string): Promise<T> => (await axios.get(url)).data
 
