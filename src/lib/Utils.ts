@@ -49,6 +49,17 @@ export class Utils {
         return buffer
     }
 
+    public getRandomFile = (dir: string): string => {
+        let document: string = ''
+        try {
+            const result = readdirSync(dir)
+            document = result[Math.floor(Math.random() * result.length)].split(/\.(?=[^\.]+$)/)[0]
+        } catch {
+            document = '404'
+        }
+        return document
+    }
+    
     public mp3ToOpus = async (mp3: Buffer): Promise<Buffer> => {
         const filename = `${tmpdir()}/${Math.random().toString(36)}`
         await writeFile(`${filename}.mp3`, mp3)
