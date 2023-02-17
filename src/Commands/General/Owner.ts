@@ -2,7 +2,7 @@ import { BaseCommand, Message, Command } from '../../Structures'
 
 @Command('owner', {
     description: 'sends bot owner number',
-    category: 'core',
+    category: 'general',
     aliases: ['creator'],
     usage: 'owner',
     dm: true,
