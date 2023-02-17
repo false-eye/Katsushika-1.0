@@ -2,7 +2,7 @@ import axios from 'axios'
 import { tmpdir } from 'os'
 import { promisify } from 'util'
 import { exec } from 'child_process'
-import { readFile, unlink, writeFile } from 'fs-extra'
+import { readFile, unlink, readdirSync, writeFile } from 'fs-extra'
 import regex from 'emoji-regex'
 import getUrls from 'get-urls'
 
