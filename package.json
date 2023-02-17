@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "description": "A WhatsApp bot written in TypeScript using Baileys",
   "author": "Issa & Lucky Yambem",
-  "main": "dist/katsushika.js",
+  "main": "dist/bot.js",
   "keywords": [
     "bot",
     "whatsapp",
