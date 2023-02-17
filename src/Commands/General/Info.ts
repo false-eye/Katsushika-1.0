@@ -1,7 +1,7 @@
 import { BaseCommand, Command, Message } from '../../Structures'
 
 @Command('info', {
-    category: 'core',
+    category: 'general',
     aliases: ['alive'],
     description: 'shows bot info',
     usage: 'info',
@@ -29,7 +29,7 @@ export default class command extends BaseCommand {
             }
         ]
         const buttonMessage = {
-            text: `*👥Users:* ${users}\n*🚀Bots:* 1\n*🌑Groups:* ${res.length}\n*🏅Mods:* ${this.client.config.mods.length}\n*📪Commands:* ${this.handler.commands.size}\n*🚦Uptime:* ${uptime}`,
+            text: `*👥Users:* ${users}\n*🚀Bots:* 2\n*🌑Groups:* ${res.length}\n*🏅Mods:* ${this.client.config.mods.length}\n*📪Commands:* ${this.handler.commands.size}\n*🚦Uptime:* ${uptime}`,
             footer: '© Sapphire Inc 2022',
             buttons: buttons,
             headerType: 1
