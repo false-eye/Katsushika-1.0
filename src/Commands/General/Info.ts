@@ -1,41 +1,29 @@
+import { join } from 'path'
 import { BaseCommand, Command, Message } from '../../Structures'
 
 @Command('info', {
-    category: 'general',
-    aliases: ['alive'],
-    description: 'shows bot info',
+    description: "Displays bot's info",
     usage: 'info',
-    exp: 10
+    category: 'general',
+    cooldown: 10,
+    exp: 100
 })
-export default class command extends BaseCommand {
-    public override execute = async (M: Message): Promise<void> => {
-    const users = await this.client.DB.user.count()
-    const uptime = this.client.utils.formatSeconds(process.uptime())
-    let getGroups = await this.client.groupFetchAllParticipating()
-    let groups = Object.entries(getGroups).slice(0).map(entry => entry[1])
-    let res = groups.map(v=> v.id)
-    console.log(res.length)
-    
-        const buttons = [
-            {
-                buttonId: 'id1',
-                buttonText: { displayText: `${this.client.config.prefix}help` },
-                type: 1
-            },
-            {
-                buttonId: 'id2',
-                buttonText: { displayText: `${this.client.config.prefix}support` },
-                type: 1
-            }
-        ]
-        const buttonMessage = {
-            text: `*👥Users:* ${users}\n*🚀Bots:* 2\n*🌑Groups:* ${res.length}\n*🏅Mods:* ${this.client.config.mods.length}\n*📪Commands:* ${this.handler.commands.size}\n*🚦Uptime:* ${uptime}`,
-            footer: '© Sapphire Inc 2022',
-            buttons: buttons,
-            headerType: 1
+export default class extends BaseCommand {
+    public override execute = async ({ reply }: Message): Promise<void> => {
+        const { description, name, homepage } = require(join(__dirname, '..', '..', '..', 'package.json')) as {
+            description: string
+            homepage: string
+            name: string
         }
-        return void (await this.client.sendMessage(M.from, buttonMessage, {
-            quoted: M.message
+        const users = await this.client.DB.user.count()
+        const image = this.client.assets.get('img') as Buffer
+        const uptime = this.client.utils.formatSeconds(process.uptime())
+        const text = `*KATSUSHIKA BOT* \n\n📡Description: ${description}*\n\n*👥Users:* ${users}*📪Commands:* ${this.handler.commands.size}\n\n*🚦Uptime:* ${uptime}`
+        return void (await reply(image, 'image', undefined, undefined, text, undefined, {
+            title: this.client.utils.capitalize(name),
+            thumbnail: image,
+            mediaType: 1,
+            sourceUrl: homepage
         }))
     }
 }
