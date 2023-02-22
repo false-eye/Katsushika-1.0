@@ -38,6 +38,23 @@ export class Database {
         await this.user.updateOne({ jid }, { [`$${method}`]: { [field]: update } })
     }
 
+    public banUser = async (jid: string, bannedBy: string, bannedIn: string, reason: string) => {
+        await this.getUser(jid)
+        const time = moment.tz('Etc/GMT').format('MMM D, YYYY HH:mm:ss')
+        await this.user.updateOne(
+            { jid },
+            {
+                $set: {
+                    'ban.banned': true,
+                    'ban.bannedBy': bannedBy,
+                    'ban.bannedIn': bannedIn,
+                    'ban.time': time,
+                    'ban.reason': reason
+                }
+            }
+        )
+    }
+
     public getGroup = async (jid: string): Promise<TGroupModel> =>
         (await this.group.findOne({ jid })) || (await new this.group({ jid }).save())
 
