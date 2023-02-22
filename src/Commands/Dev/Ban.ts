@@ -30,7 +30,7 @@ export default class command extends BaseCommand {
         const info = await this.client.DB.getUser(users[0])
         if (
                 ((this.client.config.mods.includes(users) || (info.banned) === 'ban') ||
-                (!info.banned === 'unban')
+                (!info.banned === 'unban'))
             )
             return void reply(`🟥 *@${users[0].split('@')[0]}* is a MOD & can't be banned.`)
         if (!context)
