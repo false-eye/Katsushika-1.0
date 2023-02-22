@@ -2,54 +2,51 @@ import { Command, BaseCommand, Message } from '../../Structures'
 import { IArgs } from '../../Types'
 
 @Command('ban', {
-    description: 'Bans/unban users',
+    description: 'Bans the tagged or quoted user',
     category: 'dev',
-    cooldown: 5,
-    usage: 'ban --action=[ban/unban] [tag/quote users]',
-    exp: 15
+    usage: 'ban [tag/quote users]'
 })
-export default class extends BaseCommand {
-    public override execute = async (M: Message, { flags }: IArgs): Promise<void> => {
-        const users = M.mentioned
-        if (M.quoted && !users.includes(M.quoted.sender.jid)) users.push(M.quoted.sender.jid)
-        if (users.length < 1) return void M.reply('Tag or quote a user to use this command')
-        flags = flags.filter((flag) => flag.startsWith('--action='))
-        if (flags.length < 1)
-            return void M.reply(
-                `Provide the action of the ban. Example: *${this.client.config.prefix}ban --action=ban*`
+export default class command extends BaseCommand {
+    override execute = async (
+        { reply, quoted, mentioned, from, sender, groupMetadata }: Message,
+        { context }: IArgs
+    ): Promise<void> => {
+        if (!groupMetadata) return void reply('*Try Again!*')
+        const users = mentioned
+        if (quoted && !users.includes(quoted.sender.jid)) users.push(quoted.sender.jid)
+        if (users.length <= 0) return void reply('Tag or quote a user to ban with the reason')
+        const { ban } = await this.client.DB.getUser(users[0])
+        if (ban?.banned)
+            return void reply(
+                `🟥 *@${users[0].split('@')[0]}* is already banned by *${ban.bannedBy}* in *${ban.bannedIn} ${
+                    ban.time
+                } (GMT)*\n\n📮 Reason: *${ban.reason}*`,
+                'text',
+                undefined,
+                undefined,
+                undefined,
+                [users[0]]
             )
-        const actions = ['ban', 'unban']
-        const action = flags[0].split('=')[1]
-        if (action === '')
-            return void M.reply(
-                `Provide the action of the ban. Example: *${this.client.config.prefix}ban --action=ban*`
-            )
-        if (!actions.includes(action.toLowerCase())) return void M.reply('Invalid action')
-        let text = `*🚥State:* ${action.toLowerCase() === 'ban' ? 'Banned' : 'Unbanned'}*\n\n*👤User:* `
-        let Text = '*🚥State:* ❌Skipped\n\n*👤User*:\n'
-        let resultText = ''
-        let skippedFlag = false
-        for (const user of users) {
-            const info = await this.client.DB.getUser(user)
-            if (
+        const info = await this.client.DB.getUser(users[0])
+        if (
                 ((this.client.config.mods.includes(user) || info.banned) && action.toLowerCase() === 'ban') ||
                 (!info.banned && action.toLowerCase() === 'unban')
-            ) {
-                skippedFlag = true
-                Text += `*@${user.split('@')[0]}*\n\nSkipped as this user is ${
-                    this.client.config.mods.includes(user)
-                        ? 'an immortal.🐉'
-                        : action.toLowerCase() === 'ban'
-                        ? 'already banned.🟥'
-                        : 'already unbanned.🟨'
-                }\n`
-                continue
-            }
-            text += `\n*@${user.split('@')[0]}*`
-            await this.client.DB.updateBanStatus(user, action.toLowerCase() as 'ban' | 'unban')
-        }
-        if (skippedFlag) resultText += `${Text}\n`
-        resultText += text
-        return void (await M.reply(resultText, 'text', undefined, undefined, undefined, users))
+            )
+            return void reply(`🟥 *@${users[0].split('@')[0]}* is a MOD & can't be banned.`)
+        if (!context)
+            return void reply(`Provide the reason to ban. Example - *${this.client.config.prefix}ban @user | reason*`)
+        const reason = context.trim().split('|')[1]
+        if (!reason)
+            return void reply(`Provide the reason to ban. Example - *${this.client.config.prefix}ban @user | reason*`)
+        const { subject } = groupMetadata
+        await this.client.DB.banUser(users[0], sender.username, subject, reason.trim())
+        return void reply(
+            `*@${users[0].split('@')[0]}* is now banned from using commands. Reason: *${reason.trim()}*`,
+            'text',
+            undefined,
+            undefined,
+            undefined,
+            [users[0]]
+        )
     }
 }
