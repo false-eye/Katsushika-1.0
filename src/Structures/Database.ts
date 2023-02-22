@@ -13,6 +13,7 @@ import {
     Group
 } from '../Database'
 import { Utils } from '../lib'
+import moment from 'moment-timezone'
 
 export class Database {
     public getUser = async (jid: string): Promise<TUserModel> =>
