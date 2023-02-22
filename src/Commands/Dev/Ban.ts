@@ -27,9 +27,10 @@ export default class command extends BaseCommand {
                 undefined,
                 [users[0]]
             )
+        const action = flags[0].split('=')[1]
         const info = await this.client.DB.getUser(users[0])
         if (
-                ((this.client.config.mods.includes(user) || info.banned) && action.toLowerCase() === 'ban') ||
+                ((this.client.config.mods.includes(users) || info.banned) && action.toLowerCase() === 'ban') ||
                 (!info.banned && action.toLowerCase() === 'unban')
             )
             return void reply(`🟥 *@${users[0].split('@')[0]}* is a MOD & can't be banned.`)
