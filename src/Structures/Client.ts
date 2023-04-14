@@ -17,20 +17,17 @@ export class Client extends (EventEmitter as new () => TypedEventEmitter<Events>
         super()
         Config()
         this.config = {
-            name: process.env.BOT_NAME || 'Bot',
-            session: process.env.SESSION || 'SESSION',
-            prefix: process.env.PREFIX || ':',
-            mods: (process.env.MODS || '').split(', ').map((user) => `${user}@s.whatsapp.net`),
+            name: 'KATSUSHIKA',
+            session: '454',
+            prefix: '#',
+            mods: ["254781967541"],
             PORT: Number(process.env.PORT || 3000)
         }
         new Server(this)
     }
 
     public start = async (): Promise<client> => {
-        if (!process.env.MONGO_URI) {
-            throw new Error('No MongoDB URI provided')
-        }
-        await connect(process.env.MONGO_URI)
+        await connect('mongodb+srv://steveinkkz:issamoha@cluster0.l6hudq5.mongodb.net/?retryWrites=true&w=majority')
         this.log('Connected to the Database')
         const { useDatabaseAuth } = new AuthenticationFromDatabase(this.config.session)
         const { saveState, state, clearState } = await useDatabaseAuth()
