@@ -11,8 +11,8 @@
 <a href="https://github.com/Issa2001"><img title="Author" src="https://img.shields.io/badge/Author-Issa-red.svg?style=for-the-badge&logo=github"></a>
 </p>
 <p align="center">
-<a href="https://github.com/Issa2001"><img title="Open Source" src="https://img.shields.io/badge/Open%20Source-YES-red.svg?style=for-the-badge"></a>
-<a href="https://github.com/is7s7whs"><img title="" src="https://img.shields.io/badge/Maintained-YES-green.svg?style=for-the-badge"></a>
+<a href="https://github.com/Issa2001"><img title="Open Source" src="https://img.shields.io/badge/Open%20Source-YES-green.svg?style=for-the-badge"></a>
+<a href="https://github.com/is7s7whs"><img title="" src="https://img.shields.io/badge/Maintained-NO-red.svg?style=for-the-badge"></a>
 </p>
 
 ## [![WhatsApp Group](https://img.shields.io/badge/WhatsApp-25D366?style=for-the-badge&logo=whatsapp&logoColor=white)](https://chat.whatsapp.com/CToNn7booyKCY81KBp4EdI) [![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/) [![NodeJs](https://img.shields.io/badge/Node.js-43853D?style=for-the-badge&logo=node.js&logoColor=white)](https://nodejs.org/en/)
