@@ -1,8 +1,8 @@
 {
-  "name": "reverse",
+  "name": "katsushika",
   "version": "0.1.0",
   "description": "A WhatsApp bot written in TypeScript using Baileys",
-  "author": "Alι_Aryαɴ & Lucky Yambem",
+  "author": "Issa & Lucky Yambem",
   "main": "dist/bot.js",
   "keywords": [
     "bot",
@@ -17,12 +17,12 @@
     "postinstall": "yarn build"
   },
   "bugs": {
-    "url": "https://github.com/AliAryanTech/Chisato-WhatsApp/issues"
+    "url": "https://github.com/Issa2001/Katsushika-1.0/issues"
   },
-  "homepage": "https://github.com/AliAryanTech/Chisato-WhatsApp",
+  "homepage": "https://github.com/Issa2001/Katsushika-1.0",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/AliAryanTech/Chisato-WhatsApp.git"
+    "url": "git+https://github.com/Issa2001/Katsushika-1.0.git"
   },
   "dependencies": {
     "@adiwajshing/baileys": "^4.4.0",
